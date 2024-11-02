@@ -7,5 +7,9 @@ public interface Repository<T> {
 
     T findById(String id);
 
-    T add(T notebook);
+    T add(T entity);
+
+    T update(T entity);
+
+    T delete(String id);
 }

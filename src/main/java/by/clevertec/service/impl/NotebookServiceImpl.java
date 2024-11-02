@@ -24,8 +24,20 @@ public final class NotebookServiceImpl implements NotebookService {
 
 
     @Override
+    public List<NotebookDTO> findAll() {
+        return notebookRepository.findAll().stream()
+                .map(NotebookMapper.INSTANCE::toNotebookDto)
+                .toList();
+    }
+
+    @Override
+    public NotebookDTO findById(String id) {
+        return NotebookMapper.INSTANCE.toNotebookDto(notebookRepository.findById(id));
+    }
+
+    @Override
     public List<NotebookDTO> findByParams(String model, String description, String vendorName, String quantity, String price) {
-                return notebookRepository.findByParams(model, description, vendorName, quantity, price).stream()
+        return notebookRepository.findByParams(model, description, vendorName, quantity, price).stream()
                 .map(NotebookMapper.INSTANCE::toNotebookDto)
                 .toList();
     }
@@ -35,4 +47,18 @@ public final class NotebookServiceImpl implements NotebookService {
         Notebook savedNotebook = notebookRepository.add(NotebookMapper.INSTANCE.toNotebook(notebookDTO));
         return NotebookMapper.INSTANCE.toNotebookDto(savedNotebook);
     }
+
+    @Override
+    public NotebookDTO update(NotebookDTO notebookDTO) {
+        Notebook updatedNotebook = notebookRepository.update(NotebookMapper.INSTANCE.toNotebook(notebookDTO));
+        return NotebookMapper.INSTANCE.toNotebookDto(updatedNotebook);
+    }
+
+    @Override
+    public NotebookDTO delete(String id) {
+        Notebook deletedNotebook = notebookRepository.delete(id);
+        return NotebookMapper.INSTANCE.toNotebookDto(deletedNotebook);
+    }
+
+
 }

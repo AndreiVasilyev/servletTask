@@ -3,8 +3,16 @@ package by.clevertec.repository;
 import by.clevertec.entity.Notebook;
 import by.clevertec.util.Constants;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import java.util.List;
+
+import static by.clevertec.util.Constants.NOTEBOOK_DESCRIPTION;
+import static by.clevertec.util.Constants.NOTEBOOK_ID;
+import static by.clevertec.util.Constants.NOTEBOOK_MODEL;
+import static by.clevertec.util.Constants.NOTEBOOK_PRICE;
+import static by.clevertec.util.Constants.NOTEBOOK_QUANTITY;
+import static by.clevertec.util.Constants.NOTEBOOK_VENDOR_NAME;
 
 public interface NotebookRepository extends Repository<Notebook> {
 
@@ -13,29 +21,26 @@ public interface NotebookRepository extends Repository<Notebook> {
 
     default Document buildDocument(Notebook notebook) {
         return new Document()
-                .append(Constants.NOTEBOOK_ID, notebook.getId())
-                .append(Constants.NOTEBOOK_MODEL, notebook.getModel())
-                .append(Constants.NOTEBOOK_DESCRIPTION, notebook.getDescription())
-                .append(Constants.NOTEBOOK_DESCRIPTION, notebook.getVendorName())
-                .append(Constants.NOTEBOOK_QUANTITY, notebook.getQuantity())
-                .append(Constants.NOTEBOOK_PRICE, notebook.getPrice());
+                .append(NOTEBOOK_MODEL, notebook.getModel())
+                .append(NOTEBOOK_DESCRIPTION, notebook.getDescription())
+                .append(NOTEBOOK_VENDOR_NAME, notebook.getVendorName())
+                .append(NOTEBOOK_QUANTITY, notebook.getQuantity())
+                .append(NOTEBOOK_PRICE, notebook.getPrice());
     }
 
     default Document buildDocumentById(String id) {
         Document document = new Document();
-        if (id != null) {
-            document.put(Constants.NOTEBOOK_ID, id);
-        }
+        document.put(NOTEBOOK_ID, new ObjectId(id));
         return document;
     }
 
     default Document buildDocumentByParams(String model, String description, String vendorName, String quantity, String price) {
         Document document = new Document();
-        putDocument(document, Constants.NOTEBOOK_MODEL, model);
-        putDocument(document, Constants.NOTEBOOK_DESCRIPTION, description);
-        putDocument(document, Constants.NOTEBOOK_VENDOR_NAME, vendorName);
-        putDocument(document, Constants.NOTEBOOK_QUANTITY, quantity);
-        putDocument(document, Constants.NOTEBOOK_PRICE, price);
+        putDocument(document, NOTEBOOK_MODEL, model);
+        putDocument(document, NOTEBOOK_DESCRIPTION, description);
+        putDocument(document, NOTEBOOK_VENDOR_NAME, vendorName);
+        putDocument(document, NOTEBOOK_QUANTITY, quantity);
+        putDocument(document, NOTEBOOK_PRICE, price);
         return document;
     }
 
@@ -46,13 +51,14 @@ public interface NotebookRepository extends Repository<Notebook> {
     }
 
     default Notebook buildNotebook(Document document) {
+        ObjectId id = document.getObjectId(NOTEBOOK_ID);
         return Notebook.builder()
-                .id(document.getString(Constants.NOTEBOOK_ID))
-                .model(document.getString(Constants.NOTEBOOK_MODEL))
-                .description(document.getString(Constants.NOTEBOOK_DESCRIPTION))
+                .id(id.toString())
+                .model(document.getString(NOTEBOOK_MODEL))
+                .description(document.getString(NOTEBOOK_DESCRIPTION))
                 .vendorName(document.getString(Constants.NOTEBOOK_VENDOR_NAME))
-                .quantity(document.getInteger(Constants.NOTEBOOK_QUANTITY))
-                .price(document.getDouble(Constants.NOTEBOOK_PRICE))
+                .quantity(document.getInteger(NOTEBOOK_QUANTITY))
+                .price(document.getDouble(NOTEBOOK_PRICE))
                 .build();
     }
 
